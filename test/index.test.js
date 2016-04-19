@@ -201,13 +201,11 @@ describe('explain-plan-model', function() {
     });
   });
 
-  context('Helpers', function() {
-    var explain;
+  context('Stage Helpers', function() {
     var model;
 
     beforeEach(function() {
-      explain = require('./fixtures/simple_index_3.2.json');
-      model = new ExplainPlanModel(explain, {parse: true});
+      model = loadExplainFixture('./fixtures/simple_index_3.2.json');
     });
 
     it('should find a stage by name from the root stage', function() {
@@ -235,6 +233,24 @@ describe('explain-plan-model', function() {
       assert.equal(it.next(), model.rawExplainObject.executionStats.executionStages);
       assert.equal(it.next().stage, 'IXSCAN');
       assert.equal(it.next(), null);
+    });
+
+    it('should not return a stage iterator if not initialized', function() {
+      model = new ExplainPlanModel();
+      var it = model._getStageIterator();
+      assert.equal(it.next(), null);
+    });
+  });
+
+  context('Setup', function() {
+    it('should have a default of false for initialized', function() {
+      var model = new ExplainPlanModel();
+      assert.equal(model.initialized, false);
+    });
+
+    it('should set initialized to true when using parse()', function() {
+      var model = loadExplainFixture('./fixtures/simple_index_3.2.json');
+      assert.equal(model.initialized, true);
     });
   });
 });

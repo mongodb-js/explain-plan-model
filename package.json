@@ -1,5 +1,5 @@
 {
-  "name": "explain-plan-model",
+  "name": "mongodb-explain-plan-model",
   "description": "Ampersand model abstraction for MongoDB explain plans (3.0+)",
   "version": "0.1.0",
   "scripts": {
