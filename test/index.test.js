@@ -201,6 +201,21 @@ describe('explain-plan-model', function() {
     });
   });
 
+  context('Edge Cases', function() {
+    var model;
+
+    describe('IDHACK stage', function() {
+      beforeEach(function() {
+        model = loadExplainFixture('./fixtures/idhack_stage_3.2.json');
+      });
+
+      it('should recognize an IDHACK stage and return the correct index name', function() {
+        assert.equal(model.usedIndex, '_id_');
+        assert.equal(model.isCollectionScan, false);
+      });
+    });
+  });
+
   context('Stage Helpers', function() {
     var model;
 
