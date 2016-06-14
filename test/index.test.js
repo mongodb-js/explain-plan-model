@@ -18,6 +18,15 @@ describe('explain-plan-model', function() {
         model = loadExplainFixture('./fixtures/simple_collscan_3.2.json');
       });
 
+      it('should correctly detect when an explain plan is sharded', function() {
+        model = loadExplainFixture('./fixtures/sharded_geo_query_3.2.json');
+        assert.ok(model.isSharded);
+      });
+
+      it('should correctly detect when an explain plan is not sharded', function() {
+        assert.ok(!model.isSharded);
+      });
+
       it('should parse basic fields correctly for 3.2 collection scan plans', function() {
         assert.equal(model.namespace, 'mongodb.fanclub');
         assert.equal(model.nReturned, 1000000);
@@ -127,6 +136,18 @@ describe('explain-plan-model', function() {
     var explain;
     var model;
 
+    describe('Sharded', function() {
+      it('should correctly detect when an explain plan is sharded', function() {
+        model = loadExplainFixture('./fixtures/sharded_query_2.6.json');
+        assert.ok(model.isSharded);
+      });
+
+      it('should correctly detect when an explain plan is not sharded', function() {
+        model = loadExplainFixture('./fixtures/simple_collscan_2.6.json');
+        assert.ok(!model.isSharded);
+      });
+    });
+
     describe('Simple collection scans', function() {
       beforeEach(function() {
         explain = require('./fixtures/simple_collscan_2.6.json');
@@ -226,6 +247,18 @@ describe('explain-plan-model', function() {
     it('should find a stage by name from the root stage', function() {
       var ixscan = model.findStageByName('IXSCAN');
       assert.equal(ixscan.indexName, 'age_1');
+    });
+
+    it('should iterate over shards in a sharded explain plan', function() {
+      model = loadExplainFixture('./fixtures/sharded_geo_query_3.2.json');
+      var ixscan = model.findStageByName('IXSCAN');
+      assert.equal(ixscan.indexName, 'last_login_1_last_position_2dsphere');
+    });
+
+    it('should return all matching stages with findAllStagesByName', function() {
+      model = loadExplainFixture('./fixtures/sharded_geo_query_3.2.json');
+      var ixscans = model.findAllStagesByName('IXSCAN');
+      assert.equal(ixscans.length, 3);
     });
 
     it('should find a stage by name from a provided stage', function() {
