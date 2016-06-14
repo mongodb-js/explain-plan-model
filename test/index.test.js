@@ -235,6 +235,13 @@ describe('explain-plan-model', function() {
         assert.equal(model.isCollectionScan, false);
       });
     });
+
+    describe('Multiple Indexes', function() {
+      it('should detect multiple different indexes', function() {
+        model = loadExplainFixture('./fixtures/sharded_mixed_index_3.2.json');
+        assert.deepEqual(model.usedIndex, ['age_1', null]);
+      });
+    });
   });
 
   context('Stage Helpers', function() {
