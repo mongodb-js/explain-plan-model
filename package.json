@@ -14,7 +14,7 @@
     "url": "git://github.com/mongodb-js/explain-plan-model.git"
   },
   "dependencies": {
-    "ampersand-model": "^6.0.3",
+    "ampersand-model": "^8.0.0",
     "lodash": "^4.14.1"
   },
   "devDependencies": {
